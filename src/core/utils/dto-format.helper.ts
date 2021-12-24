@@ -1,0 +1,1 @@
+export const wrapInDataObject = (data) => { return { data: data }}
