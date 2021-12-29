@@ -1,8 +1,11 @@
-import { ConflictException, Controller, Get, NotFoundException, ParseIntPipe, Post, Query, Req } from '@nestjs/common';
-import { handleUnknowError } from 'src/core/utils/api-err.helper';
-import { wrapInDataObject } from 'src/core/utils/dto-format.helper';
-import { UsersService } from 'src/users/users.service';
-import { SubscriptionsService } from './subscription.service';
+import { 
+  ConflictException, Controller, Get, 
+  NotFoundException, ParseIntPipe, Post, Query, Req } 
+  from '@nestjs/common';
+import { handleUnknowError } from '../core/utils/api-err.helper';
+import { wrapInDataObject } from '../core/utils/dto-format.helper';
+import { UsersService } from '../users/users.service';
+import { SubscriptionsService } from '../subscription/subscription.service';
 
 @Controller('subscriptions')
 export class SubscriptionController {
@@ -13,11 +16,14 @@ export class SubscriptionController {
 
   @Get()
   async getAllSubscribers(@Query('userId', ParseIntPipe) id) {
-    const data = ( await this.subscriptionsSvc.getAllSubscribers(id).catch(err => {
+    const datas = ( await this.subscriptionsSvc.getAllSubscribers(id).catch(err => {
       handleUnknowError(err);
-    } )) as { subscriberId }[];
+    } )) as { subscriberId: number }[];
   
-    return wrapInDataObject(data);
+    return wrapInDataObject(
+      datas.map(data => ({
+        subscriberId: data.subscriberId
+      })));
   }
 
   @Post() 
@@ -39,3 +45,5 @@ export class SubscriptionController {
   }
 
 }
+
+

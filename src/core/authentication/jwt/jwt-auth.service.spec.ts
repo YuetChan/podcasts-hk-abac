@@ -2,17 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtAuthService } from './jwt-auth.service';
 
 describe('JwtService', () => {
-  let service: JwtAuthService;
+  let svc: JwtAuthService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [JwtAuthService],
-    }).compile();
-
-    service = module.get<JwtAuthService>(JwtAuthService);
+    svc = new JwtAuthService(null, null);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(svc).toBeDefined();
   });
 });

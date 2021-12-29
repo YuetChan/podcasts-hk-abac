@@ -2,12 +2,12 @@ import {
   Controller, Get, HttpStatus, InternalServerErrorException,
   Param, ParseIntPipe, Patch, Post, Req, Res, UnprocessableEntityException 
 } from '@nestjs/common';
-import { S3ManagerService } from 'src/core/aws-manager/aws-s3/s3-manager.service';
+import { S3ManagerService } from '../core/aws-manager/aws-s3/s3-manager.service';
 import { ContentsService } from './contents.service';
 import { v4 as uuidv4 } from 'uuid';
-import { CategoriesService } from 'src/categories/categories.service';
-import { handleUnknowError } from 'src/core/utils/api-err.helper';
-import { wrapInDataObject } from 'src/core/utils/dto-format.helper';
+import { CategoriesService } from '../categories/categories.service';
+import { handleUnknowError } from '../core/utils/api-err.helper';
+import { wrapInDataObject } from '../core/utils/dto-format.helper';
 
 @Controller('contents')
 export class ContentsController {
@@ -18,7 +18,7 @@ export class ContentsController {
     private categoriesSvc: CategoriesService) { }
 
   @Get(':id')
-  async getContent(@Param('id', ParseIntPipe) id) { 
+  async getContentById(@Param('id', ParseIntPipe) id) { 
     const data = await this.contentsSvc.getContentById(id).catch(err => {
       handleUnknowError(err);
     }); 

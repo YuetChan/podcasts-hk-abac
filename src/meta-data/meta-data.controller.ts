@@ -1,8 +1,8 @@
-import { Controller, Get, HttpStatus, NotFoundException, Put, Query, Req, Res } from '@nestjs/common';
-import { CategoriesService } from 'src/categories/categories.service';
-import { handleUnknowError } from 'src/core/utils/api-err.helper';
-import { wrapInDataObject } from 'src/core/utils/dto-format.helper';
-import { TagsService } from 'src/tags/tags.service';
+import { Controller, Get, HttpStatus, Put, Query, Req, Res } from '@nestjs/common';
+import { CategoriesService } from '../categories/categories.service';
+import { handleUnknowError } from '../core/utils/api-err.helper';
+import { wrapInDataObject } from '../core/utils/dto-format.helper';
+import { TagsService } from '../tags/tags.service';
 
 @Controller('meta-data')
 export class MetaDataController {
@@ -12,7 +12,10 @@ export class MetaDataController {
     private tagsSvc: TagsService) { }
 
   @Get('categories')
-  getAllCategories() { return this.categoriesSvc.getAllCategories(); }
+  getAllCategories() { 
+    const data = this.categoriesSvc.getAllCategories();
+    return wrapInDataObject(data); 
+  }
 
   @Get('tags')
   async getAllTags(@Query('contentId') contentId) { 

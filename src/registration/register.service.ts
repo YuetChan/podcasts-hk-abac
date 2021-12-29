@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { User, UsersService } from "src/users/users.service";
+import { User, UsersService } from "../users/users.service";
 
 @Injectable()
 export class RegisterService {
 
   constructor(private userSvc: UsersService) { }
 
-  async register(user: User) {
+  async register(user: User): Promise<User> {
 		const registeredUser = await this.userSvc.getUserByEmail(user.email, false, false);
 		if(!registeredUser) {  
 			return this.userSvc.createUser({

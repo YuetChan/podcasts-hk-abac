@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { Content } from "src/contents/contents.service";
-import { PrismaService } from "src/core/provider/prisma.service";
+import { Subscription } from "../subscription/subscription.service";
+import { Content } from "../contents/contents.service";
+import { PrismaService } from "../core/provider/prisma.service";
 
 @Injectable()
 export class UsersService {
@@ -8,7 +9,7 @@ export class UsersService {
   constructor(private readonly prismaSvc: PrismaService) { }
 
   async getUserById(
-    id: number, withSubscriptions: boolean, withUploadQuota: boolean) {
+    id: number, withSubscriptions: boolean, withUploadQuota: boolean): Promise<User> {
     return await this.prismaSvc.user.findFirst({
       where: { id: id },
       include: { 
@@ -89,6 +90,8 @@ export class User {
 
   content?: Content[];
   uploadQuota?: UploadQuota;
+
+  subscriptions?: Subscription[];
 
   playHistory?: PlayHistory
 }

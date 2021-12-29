@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import * as moment from "moment";
 
-import { PrismaService } from "src/core/provider/prisma.service";
+import { PrismaService } from "../core/provider/prisma.service";
 
 @Injectable()
 export class ContentsService {
 
 	constructor(private readonly prismaSvc: PrismaService) { }
 
-	async getContentById(id) { return await this.prismaSvc.content.findFirst({ where: { id: id } }); }
+	async getContentById(id): Promise<Content> { return await this.prismaSvc.content.findFirst({ where: { id: id } }); }
 
 	async getAllContents(startDate, endDate) { 
 		const startDate_ = moment(startDate).startOf('day').unix();
@@ -84,8 +84,8 @@ export class Content {
 	mediaType: string;
 	source: string;
 
-	categories: [];
-	tags: [];
+	categories?: [];
+	tags?: [];
 
 	ord?: number;
 	createdAt?: number;
