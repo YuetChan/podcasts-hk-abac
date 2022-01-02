@@ -27,7 +27,7 @@ export class JwtAuthService {
     }
 
     return this.jwtSvc.sign({ 
-      provider: 'talk-n-pod',
+      provider: 'hk-podcast',
 
       id: user.id,
       email: user.email,
@@ -37,4 +37,4 @@ export class JwtAuthService {
   }
 }
 
-export enum LoginType { GOOGLE, TALK_N_POD }
+export enum LoginType { GOOGLE, HK_PODCAST }

@@ -50,7 +50,7 @@ export class ContentsController {
 
     try {
       const fields = {};
-      // await this.s3ManagerSvc.generatePresignedUrlForUpload('talk-n-pod', src).catch(err => {
+      // await this.s3ManagerSvc.generatePresignedUrlForUpload('hk-podcast', src).catch(err => {
       //   console.debug(err);
       //   throw new InternalServerErrorException();
       // });
