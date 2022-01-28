@@ -3,6 +3,7 @@ import { AwsSdkModule } from 'nest-aws-sdk';
 import { S3, SharedIniFileCredentials } from "aws-sdk";
 
 import { S3ManagerModule } from "./aws-s3/s3-manager.module";
+import { S3Controller } from './s3.controller';
 
 @Module({
 	imports: [
@@ -19,5 +20,6 @@ import { S3ManagerModule } from "./aws-s3/s3-manager.module";
 	],
 	providers: [],
 	exports: [S3ManagerModule],
+	controllers: [S3Controller],
 })
 export class AwsManagerModule { }

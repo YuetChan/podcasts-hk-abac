@@ -1,14 +1,17 @@
-import { Injectable, NestMiddleware, UnprocessableEntityException } from "@nestjs/common";
+import { HttpStatus, Injectable, InternalServerErrorException, NestMiddleware, UnprocessableEntityException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+
+import axios from "axios";
 import * as moment from "moment";
-import { UsersService } from "src/users/users.service";
 
 @Injectable()
 export class QuotaLimitMiddleware implements NestMiddleware {
 
-	constructor(private usersSvc: UsersService) { }
+	constructor(private configSvc: ConfigService) { }
 
   async use(req: any, res: any, next: () => void) {
-		const user = req.user;
+		const user = req.data.user;
+
 		if(user.role !== 'admin') {
 			const uploadQuota = user.uploadQuota;
 			const uploadedAt = moment.unix(uploadQuota.uploadedAt).tz('America/New_York');
@@ -28,7 +31,12 @@ export class QuotaLimitMiddleware implements NestMiddleware {
 				}
 			}
 	
-			req.user = await this.usersSvc.updateUserUploadQuota(user); 
+			const res = await axios.patch(
+				this.configSvc.get<string>('REST_HOST') + `/users/${user.id}/uploadQuota`);
+				
+			if(res.status !== HttpStatus.NO_CONTENT) {
+				throw new InternalServerErrorException();
+			}
 		}
 
 		console.debug('quota limit finished', user);

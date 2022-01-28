@@ -1,14 +1,12 @@
-import { UsersService } from "../users/users.service";
 import { RegisterService } from "./register.service";
 
 describe('RegistrationService', () => {
 
   let svc: RegisterService;
-  let usersSvc: UsersService;
+
 
   beforeEach(async () => {
-    usersSvc = new UsersService(null);
-    svc = new RegisterService(usersSvc);
+    svc = new RegisterService();
   });
 
   it('should be defined', () => {

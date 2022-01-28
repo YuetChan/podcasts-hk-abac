@@ -5,22 +5,20 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GoogleOauthModule } from './core/authentication/google-oauth/google-oauth.module';
 import { JwtAuthModule } from './core/authentication/jwt/jwt-auth.module';
-import { UsersModule } from './users/users.module';
-import { ContentsModule } from './contents/contents.module';
 import { RegistrationModule } from './registration/registration.module';
-import { ProviderModule } from './core/provider/provider.module';
 import { JwtAuthMiddleware } from './core/middleware/security/jwt-auth.middleware';
-import { UsersController } from './users/users.controller';
 import { QuotaLimitMiddleware } from './core/middleware/resources/quota-limit.middleware';
-import { ContentsController } from './contents/contents.controller';
 import { AwsManagerModule } from './core/aws-manager/aws-manager.module';
-import { ContentsAbacMiddleware } from './core/middleware/resources/contents-abac.middleware';
+import { ContentAbacMiddleware } from './core/middleware/abac/content-abac.middleware';
 import { FilterModule } from './core/middleware/filter.module';
-import { MetaDataModule } from './meta-data/meta-data.module';
 import { UtilsModule } from './core/utils/utils.module';
-import { SubscriptionModule } from './subscription/subscription.module';
-import { SubscriptionController } from './subscription/subscription.controller';
-import { SubscriptionsAbacMiddleware } from './core/middleware/resources/subscription-abac.middleware';
+import { SubscriptionAbacMiddleware } from './core/middleware/abac/subscription-abac.middleware';
+import { UserController } from './abac/user/user.controller';
+import { UserAbacMiddleware } from './core/middleware/abac/user-abac-middleware';
+import { ContentController } from './abac/content/content.controller';
+import { SubscriptionController } from './abac/subscription/subscription.controller';
+import { TopicAbacMiddleware } from './core/middleware/abac/topic-abac.middleware';
+import { TopicController } from './abac/topic/topic.controller';
 
 @Module({
   imports: [
@@ -29,32 +27,42 @@ import { SubscriptionsAbacMiddleware } from './core/middleware/resources/subscri
 
     GoogleOauthModule,
     JwtAuthModule,
-    ProviderModule,
     AwsManagerModule,
     FilterModule,
 
-    UsersModule,
-    ContentsModule,
-    RegistrationModule,
-    MetaDataModule,
-    SubscriptionModule,
+    RegistrationModule
   ],
-  controllers: [AppController],
+  controllers: [
+    AppController, 
+    ContentController, SubscriptionController, 
+    TopicController, UserController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
   
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(JwtAuthMiddleware).forRoutes(UsersController, ContentsController, SubscriptionController)
-      .apply(QuotaLimitMiddleware, ContentsAbacMiddleware).forRoutes(
-        {path: '/contents', method: RequestMethod.POST},
-        {path: '/contents/:id', method: RequestMethod.POST},
-        {path: '/contents/:id', method: RequestMethod.PATCH})
-      .apply(ContentsAbacMiddleware).forRoutes(
-        {path: '/contents/:id', method: RequestMethod.GET})
-      .apply(SubscriptionsAbacMiddleware).forRoutes(
-        {path: '/subscriptions', method: RequestMethod.POST})  
+      .apply(JwtAuthMiddleware, ContentAbacMiddleware).forRoutes(
+        { path: 'contents/:id', method: RequestMethod.GET }, 
+        { path: 'contents', method: RequestMethod.POST },
+        { path: 'contents/:id/info', method: RequestMethod.PATCH },
+        { path: 'contents/:id/media', method: RequestMethod.PATCH },
+        { path: 'contents/:id', method: RequestMethod.DELETE },)
+
+      // .apply(JwtAuthMiddleware, UserAbacMiddleware).forRoutes(
+      //   { path: 'users/role', method: RequestMethod.GET })
+
+      .apply(JwtAuthMiddleware, TopicAbacMiddleware).forRoutes(
+        { path: 'topics', method: RequestMethod.GET },
+        { path: 'topics', method: RequestMethod.POST },
+        { path: 'topics/:id', method: RequestMethod.PATCH },
+        { path: 'topics/:id', method: RequestMethod.DELETE }
+      )
+
+      .apply(JwtAuthMiddleware, SubscriptionAbacMiddleware).forRoutes(
+        { path: 'subscriptions', method: RequestMethod.GET },
+        { path: 'subscriptions', method: RequestMethod.POST },
+        { path: 'subscriptions/:id', method: RequestMethod.DELETE})    
   }
 
 }

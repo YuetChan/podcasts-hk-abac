@@ -12,6 +12,8 @@ export class JwtAuthService {
   // the user refer to the
   async getJwt(user, loginType: LoginType) {
     if(loginType === LoginType.GOOGLE) {
+      console.log(user);
+
       const registeredUser = await this.registerSvc.register({
         email: user.email,
         name: user.name
@@ -27,7 +29,7 @@ export class JwtAuthService {
     }
 
     return this.jwtSvc.sign({ 
-      provider: 'hk-podcast',
+      provider: 'podcast_hk',
 
       id: user.id,
       email: user.email,
